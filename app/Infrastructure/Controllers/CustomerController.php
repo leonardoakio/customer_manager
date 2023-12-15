@@ -2,85 +2,40 @@
 
 namespace App\Infrastructure\Controllers;
 
-use Illuminate\View\View;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use App\Domain\ValueObject\CustomerId;
+use App\Application\Services\CustomerService;
+use App\Application\DTO\CustomerDTO;
 
 class CustomerController
 {
+    public function __construct(
+        protected CustomerService $customerService,
+    ) {}
+
     public function getCustomerPanel(Request $request)
     {
-        $userId = UserId::fromString($request->header('user_id'));
+        $customerCollection =$this->customerService->getCustomerPanel();
 
-        $customerPlans =$this->customerPlansRepository->getCustomerPlans($userId);
+        $customersDto = CustomerDTO::create($customerCollection);
 
-        return $this->response->json($customerPlans);
+        return response()->json($customersDto);
     }
-
+ 
     public function showCustomer(Request $request)
     {
-        $userId = UserId::fromString($request->header('user_id'));
 
-        $customerPlans =$this->customerPlansRepository->getCustomerPlans($userId);
-
-        return $this->response->json($customerPlans);
     }
 
      public function createCustomer(Request $request)
     {
-        try {
-            $userId = (int)$request->header('user_id');
-            $planName = $request->input('name');
-            $planValue = $request->input('value');
 
-            $now = new DateTimeImmutable();
-
-            $customerPlan = CustomerPlan::fromArray([
-                'user_id' => $userId,
-                'name' => $planName,
-                'status' => CustomerPlanStatusEnum::ACTIVE,
-                'value' => $planValue,
-                'active_at' => $now->format('Y-m-d H:i:s')
-            ]);
-
-            $this->customerPlansRepository->saveCustomerPlan($customerPlan);
-
-            return $this->response->json([
-                'message' => 'Sucesso ao incluir os dados!',
-                'data' => $customerPlan->toArray()
-            ]);
-        } catch (\Throwable $e) {
-            return $this->response->json([
-                'message' => $e->getMessage(),
-                'error_code' => $e->getCode(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine()
-            ]);
-        }
     }
 
     public function updateCustomer(Request $request)
     {
-        $userId = UserId::fromString($request->header('user_id'))->asInteger();
-        $id = $request->input('id');
-        $planName = $request->input('name');
-        $status = $request->input('status');
-        $value = $request->input('value');
 
-        $customerPlan = CustomerPlan::fromArray([
-            'id' => $id,
-            'user_id' => $userId,
-            'name' => $planName,
-            'status' => $status ?: CustomerPlanStatusEnum::ACTIVE,
-            'value' => $value
-        ]);
-
-        $update = $this->customerPlansRepository->updateCustomerPlan($customerPlan);
-
-        $updatedData = array_merge(['id' => $id, 'user_id' => $userId,], $update);
-
-        return $this->response->json([
-            'message' => 'Sucesso ao atualizar os dados!',
-            'data' => $updatedData
-        ]);
     }
     
     public function deleteCustomer(Request $request)
