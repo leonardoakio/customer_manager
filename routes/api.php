@@ -20,8 +20,8 @@ Route::group(["prefix" => '/api/v1'], function () {
     Route::group(["prefix" => '/customer'], function () {
         Route::get('/', [CustomerController::class, 'getCustomerPanel']);
         Route::get('/{id}', [CustomerController::class, 'showCustomer']);
-        Route::post('/create', [CustomerController::class, 'createCustomer']);
-        Route::patch('/update', [CustomerController::class, 'updateCustomer']);
-        Route::delete('/delete', [CustomerController::class, 'deleteCustomer']);
+        Route::post('/{id}', [CustomerController::class, 'createCustomer']);
+        Route::patch('/{id}', [CustomerController::class, 'updateCustomer']);
+        Route::delete('/{id}', [CustomerController::class, 'deleteCustomer']);
     });
 });
