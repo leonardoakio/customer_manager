@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\ValueObject;
+namespace App\Domain\ValueObjects;
 
 use InvalidArgumentException;
 
@@ -23,14 +23,14 @@ class CustomerId
         }
     }
 
-    public static function fromInteger(int $userId): self
+    public static function fromInteger(int $customerId): self
     {
-        return new self($userId);
+        return new self($customerId);
     }
 
-    public static function fromString(string $userId): self
+    public static function fromString(string $customerId): self
     {
-        return new self((int)$userId);
+        return new self((int)$customerId);
     }
 
     public function asInteger(): int
