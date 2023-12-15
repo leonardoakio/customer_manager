@@ -18,8 +18,9 @@ class CustomerRepository implements CustomerRepositoryInterface
     public function getCustomersOverview(): CustomerCollection
     {
         $customers = $this->customer
-            ->get()
-            ->toArray();
+        ->with(['addresses'])        
+        ->get()
+        ->toArray();
 
         if (empty($customers)) {
             throw new InvalidArgumentException(
@@ -36,6 +37,7 @@ class CustomerRepository implements CustomerRepositoryInterface
     {
         $customers = $this->customer
             ->where('id', $customerId->asInteger())
+            ->with(['addresses'])        
             ->get()
             ->toArray();
 

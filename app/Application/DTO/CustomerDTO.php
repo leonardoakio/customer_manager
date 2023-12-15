@@ -15,8 +15,9 @@ class CustomerDTO
                 'id' => $customer->getId(),
                 'name' => $customer->getName(),
                 'mother_name' => $customer->getMotherName(),
-                'document' => $customer->getDocument(),
-                'cns' => $customer->getCns(),
+                'document' => $customer->getDocument()->toString(),
+                'cns' => $customer->getCns()->toString(),
+                'address' => $customer->getAddress()->toArray(),
                 'picture_url' => $customer->getPictureUrl(),
             ];
         }

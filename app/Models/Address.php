@@ -21,6 +21,6 @@ class Address extends Model
 
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customer::class, 'address_id');
+        return $this->belongsTo(Customer::class, 'address_id', 'id');
     }
 }

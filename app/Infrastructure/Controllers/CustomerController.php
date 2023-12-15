@@ -27,6 +27,8 @@ class CustomerController
         } catch (\Throwable $e) {
             return response()->json([
                 'message' => $e->getMessage(),
+                'archive' => $e->getFile(),
+                'line' => $e->getLine()
             ], 404);
         }
     }

@@ -2,7 +2,12 @@
 
 namespace App\Domain\Entities;
 
+use App\Domain\Collections\AddressCollection;
 use App\Domain\Factories\CustomerFactory;
+use App\Domain\ValueObjects\Cns;
+use App\Domain\ValueObjects\Cpf;
+use App\Domain\Entities\Address;
+
 use DateTimeImmutable;
 
 class Customer
@@ -11,10 +16,10 @@ class Customer
         private int                   $id,
         private string                $name,
         private string                $motherName,
-        private string                $document,
-        private string                $cns,
         private string                $pictureUrl,
-        // private ?CustomerAddress      $customerAddress,
+        private Cpf                   $document,
+        private Cns                   $cns,
+        private Address               $address,
         private ?DateTimeImmutable    $createdAt = null,
         private ?DateTimeImmutable    $updatedAt = null
     ) {
@@ -40,14 +45,19 @@ class Customer
         return $this->motherName;
     }
 
-    public function getDocument(): string
+    public function getDocument(): Cpf
     {
         return $this->document;
     }
 
-    public function getCns(): string
+    public function getCns(): Cns
     {
         return $this->cns;
+    }
+
+    public function getAddress(): Address
+    {
+        return $this->address;
     }
 
     public function getPictureUrl(): string
@@ -55,9 +65,8 @@ class Customer
         return $this->pictureUrl;
     }
 
-
-    // public function getPictureUrl(): ?CustomerPlan
-    // {
-    //     return $this->plan;
-    // }
+    public function addAddress(AddressCollection $addressCollection): void
+    {
+        $this->address = $addressCollection;
+    }
 }

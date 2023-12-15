@@ -26,11 +26,4 @@ class CustomerCollection
     {
         return $this->items;
     }
-
-    // public function totalReceived(): float
-    // {
-    //     return array_reduce($this->items, function (?float $totalReceived, CustomerPayment $customerPayment) {
-    //         return $totalReceived + $customerPayment->getPaidValue();
-    //     }, 0);
-    // }
 }
