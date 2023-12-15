@@ -4,6 +4,7 @@ namespace App\Application\Services;
 
 use App\Domain\Collections\CustomerCollection;
 use App\Domain\ValueObjects\CustomerId;
+use App\Domain\ValueObjects\Pagination;
 use App\Infrastructure\Repositories\CustomerRepositoryInterface;
 
 class CustomerService
@@ -12,9 +13,9 @@ class CustomerService
         protected CustomerRepositoryInterface $customerRepository,
     ) {}
 
-    public function getCustomerPanel(): CustomerCollection
+    public function getCustomerPanel(?Pagination $pagination): array
     {
-        return $this->customerRepository->getCustomersOverview();
+        return $this->customerRepository->getCustomersOverview($pagination);
     }
 
     public function getSingleCustomer(CustomerId $customerId): array

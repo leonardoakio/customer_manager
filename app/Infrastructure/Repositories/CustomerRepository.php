@@ -5,6 +5,8 @@ namespace App\Infrastructure\Repositories;
 use App\Domain\Collections\CustomerCollection;
 use App\Domain\Entities\Customer;
 use App\Domain\ValueObjects\CustomerId;
+use App\Domain\ValueObjects\Metadata;
+use App\Domain\ValueObjects\Pagination;
 use App\Models\Customer as CustomerModel;
 use InvalidArgumentException;
 
@@ -15,12 +17,21 @@ class CustomerRepository implements CustomerRepositoryInterface
     ) {
     }
 
-    public function getCustomersOverview(): CustomerCollection
+    public function getCustomersOverview(?Pagination $pagination = null): array
     {
-        $customers = $this->customer
-        ->with(['addresses'])        
-        ->get()
-        ->toArray();
+        $query = $this->customer->with(['addresses']);
+
+        if ($pagination) {
+            $pagination->setTotalRecords($query->count());
+            $this->applyPagination($query, $pagination);
+        }
+
+        $currentPage = $pagination->page();
+
+        $offset = ($currentPage - 1) * $pagination->limit();
+        $query->offset($offset);
+
+        $customers = $query->get()->toArray();
 
         if (empty($customers)) {
             throw new InvalidArgumentException(
@@ -30,7 +41,16 @@ class CustomerRepository implements CustomerRepositoryInterface
             );
         }
 
-        return CustomerCollection::fromArray($customers);
+        $metadata = new Metadata(
+            $pagination->page(),
+            $pagination->limit(),
+            $pagination->totalRecords()
+        );
+    
+        return [
+            'customers' => CustomerCollection::fromArray($customers),
+            'metadata' => $metadata->toArray(),
+        ];    
     }
 
     public function getCustomer(CustomerId $customerId): array
@@ -111,4 +131,12 @@ class CustomerRepository implements CustomerRepositoryInterface
 
         return true;
     }
+
+    private function applyPagination($query, ?Pagination $pagination): void
+    {
+        $query->orderBy('id', $pagination->orderBy()->asString());
+
+        $query->limit($pagination->limit());
+    }
+    
 }

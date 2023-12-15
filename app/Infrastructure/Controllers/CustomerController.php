@@ -7,6 +7,8 @@ use App\Application\Services\CustomerService;
 use App\Application\DTO\CustomerDTO;
 use App\Domain\Entities\Customer;
 use App\Domain\ValueObjects\CustomerId;
+use App\Domain\ValueObjects\OrderBy;
+use App\Domain\ValueObjects\Pagination;
 use App\Infrastructure\Repositories\CustomerRepositoryInterface;
 
 class CustomerController
@@ -16,20 +18,33 @@ class CustomerController
         protected CustomerRepositoryInterface $customerRepository
     ) {}
 
-    public function getCustomerPanel()
+    public function getCustomerPanel(Request $request)
     {
         try {
-            $customerCollection =$this->customerService->getCustomerPanel();
+            $page = $request->has('page') ? (int)$request->query('page') : null;
+            $limit = $request->has('limit') ? (int)$request->query('limit') : null;
+            $orderBy = $request->has('orderby') ? (string)$request->query('orderby') : 'asc';
+            
+            $pagination = new Pagination(
+                page: $page,
+                limit: $limit,
+                orderBy: new OrderBy($orderBy)
+            );
 
-            $customersDto = CustomerDTO::create($customerCollection);
+            $customerData =$this->customerService->getCustomerPanel($pagination);
 
-            return response()->json($customersDto);
+            $customersDto = CustomerDTO::create($customerData['customers']);
+
+            return response()->json([
+                'customers' => $customersDto,
+                'metadata' => $customerData['metadata'],
+            ]);
         } catch (\Throwable $e) {
             return response()->json([
                 'message' => $e->getMessage(),
                 'archive' => $e->getFile(),
                 'line' => $e->getLine()
-            ], 404);
+            ], 404); 
         }
     }
  
