@@ -1,7 +1,8 @@
 <?php
 
-use App\Http\Controllers\HealthHandler;
-use App\Http\Controllers\DocumentationController;
+use App\Infrastructure\Controllers\HealthHandler;
+use App\Infrastructure\Controllers\DocumentationController;
+use App\Infrastructure\Controllers\CustomerController;
 use Illuminate\Support\Facades\Route;
 
 // Health Check

@@ -44,8 +44,8 @@
                 // Begin Swagger UI call region
                 const ui = SwaggerUIBundle({
                     urls: [
-                        {url: "/api/documentation/v1.yaml", name: "api/v1"},
-                        {url: "/api/documentation/v2.yaml", name: "api/v2"},
+                        {url: "/documentation/v1.yaml", name: "api/v1"},
+                        {url: "/documentation/v2.yaml", name: "api/v2"},
                     ],
                     "urls.primaryName": "api/v1",
                     dom_id: '#swagger-ui',

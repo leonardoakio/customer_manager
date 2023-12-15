@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Infrastructure\Controllers;
 
 use Predis\Client;
 use Illuminate\Support\Facades\Redis;
