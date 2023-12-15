@@ -45,7 +45,7 @@ var_dump($_ENV)
 #### Raiz do projeto
 - Validar versão do **REDIS** 
 ```
-docker exec -it cliente-total_redis redis-cli
+docker exec -it customer_manager_redis redis-cli
 ```
 ```
 INFO SERVER
@@ -59,7 +59,7 @@ SELECT VERSION();
 ```
 - Validar versão do **MongoDB** (raiz do projeto)
 ```
-docker exec -it cliente-total_mongodb bash
+docker exec -it customer_manager_mongodb bash
 ```
 ```
 mongod --version
