@@ -2,7 +2,6 @@
 
 namespace App\Infrastructure\Repositories;
 
-use App\Domain\Collections\CustomerCollection;
 use App\Domain\Entities\Customer;
 use App\Domain\ValueObjects\CustomerId;
 use App\Domain\ValueObjects\Pagination;
