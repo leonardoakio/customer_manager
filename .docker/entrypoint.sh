@@ -10,7 +10,7 @@ chmod 755 /var/run/php
 
 composer install
 php artisan key:generate
-# php artisan jwt:secret
+php artisan jwt:secret
 php artisan migrate:fresh --seed
 
 php-fpm

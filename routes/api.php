@@ -1,5 +1,6 @@
 <?php
 
+use App\Infrastructure\Controllers\AuthController;
 use App\Infrastructure\Controllers\CustomerController;
 use App\Infrastructure\Controllers\HealthHandler;
 use App\Infrastructure\Controllers\DocumentationController;
@@ -17,7 +18,13 @@ Route::group(["prefix" => "documentation"], function () {
     Route::get("/v2.yaml", [DocumentationController::class, "yamlV2"]);
 });
 
-Route::group(["prefix" => "/api/v1"], function () {
+Route::group(["prefix" => "/auth"], function () {
+    Route::post('/login', [AuthController::class, "login"]);
+    Route::post('/logout', [AuthController::class, "logout"]);
+    Route::post('/refresh', [AuthController::class, "refresh"]);
+});
+
+Route::group(["prefix" => "/api/v1", 'middleware' => 'jwt'], function () {
     Route::group(["prefix" => "/customer"], function () {
         Route::get("/", [CustomerController::class, "getCustomerPanel"]);
         Route::get("/{id}", [CustomerController::class, "showCustomer"]);
