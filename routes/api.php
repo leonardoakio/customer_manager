@@ -5,6 +5,7 @@ use App\Infrastructure\Controllers\CustomerController;
 use App\Infrastructure\Controllers\HealthHandler;
 use App\Infrastructure\Controllers\DocumentationController;
 use App\Infrastructure\Controllers\PostalCodeController;
+use App\Infrastructure\Controllers\ValidationDataController;
 use Illuminate\Support\Facades\Route;
 
 // Health Check
@@ -25,7 +26,7 @@ Route::group(["prefix" => "/auth"], function () {
 });
 
 Route::group(["prefix" => "/api/v1"], function () {
-    Route::group(["prefix" => "/customer"], function () {
+    Route::group(["prefix" => "/customer", "middleware' => 'jwt"], function () {
         Route::get("/", [CustomerController::class, "getCustomerPanel"]);
         Route::get("/{id}", [CustomerController::class, "showCustomer"]);
         Route::post("/{id}", [CustomerController::class, "createCustomer"]);
@@ -33,8 +34,12 @@ Route::group(["prefix" => "/api/v1"], function () {
         Route::delete("/{id}", [CustomerController::class, "deleteCustomer"]);
     });
 
-    Route::get("/buscar/{cep}", [PostalCodeController::class, "searchPostalCode"]);
+    Route::group(["prefix" => "/validate"], function () {
+        Route::get("/postal-code", [ValidationDataController::class, "validatePostalCode"]);
+        Route::get("/cns", [ValidationDataController::class, "validateCns"]);
+    });
 });
 
+# User create test
 Route::post("/create", [CustomerController::class, "createCustomer"]);
 

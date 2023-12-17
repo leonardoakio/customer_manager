@@ -1,55 +1,49 @@
 <?php
 
 namespace App\Application\Services;
+
 use App\Infrastructure\Cache\PostalCodeCache;
-use Illuminate\Support\Facades\Http;
+use App\Infrastructure\Repositories\PostalCodeRepositoryInterface;
+use InvalidArgumentException;
 
 class PostalCodeService
 {
     public function __construct(
-        private PostalCodeCache $cache
+        private PostalCodeCache $cache,
+        private PostalCodeRepositoryInterface $postalCodeRepository
     ) {}
 
-    public function searchPostalCode(string $cep)
+    public function validateCep(string $postalCode)
     {
-        if (!$cep) {
+        if (!$postalCode) {
             return response()->json(['error' => 'CEP não fornecido'], 400);
         }
 
-        $cep = preg_replace('/[^0-9]/', '', $cep);
+        $postalCode = preg_replace('/[^0-9]/', '', $postalCode);
 
-        if (strlen($cep) !== 8) {
+        if (strlen($postalCode) !== 8) {
             return response()->json(['error' => 'CEP inválido'], 400);
         }
 
-        $cepData = $this->getCepData($cep);
-
-        if ($cepData) {
-            return response()->json($cepData);
-        } else {
-            return response()->json(['error' => 'CEP não encontrado'], 404);
-        }
+        return $this->getCepData($postalCode);
     }
 
-    public function getCepData(string $cep): ?array
+    public function getCepData(string $postalCode): ?array
     {
-        $viaCepUrl = config('integration.via-cep');
-
-        $cachedData = $this->cache->get($cep);
+        $cachedData = $this->cache->get($postalCode);
     
         if ($cachedData !== null) {
             return $cachedData;
         }
-    
-        $response = Http::get($viaCepUrl['api']['url'] . "ws/{$cep}/json");
-    
-        if ($response->successful()) {
-            $data = $response->json();
-            $this->cache->save($cep, $data, 3600);
 
-            return $data;
+        $response = $this->postalCodeRepository->getPostalCodeData($postalCode);
+    
+        if (!$response) {
+            throw new InvalidArgumentException('O CEP não pode ser consultado!');
         }
 
-        return null;
+        $this->cache->save($postalCode, $response, 3600);
+
+        return $response;
     }
 }
