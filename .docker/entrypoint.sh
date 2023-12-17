@@ -8,6 +8,9 @@ fi
 # Defina as permissões adequadas
 chmod 755 /var/run/php
 
+php artisan horizon:install
+php artisan horizon &
+
 # composer install
 php artisan key:generate
 php artisan jwt:secret

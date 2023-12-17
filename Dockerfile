@@ -9,13 +9,12 @@ RUN apk update && apk add --no-cache \
     openssl \
     bash \
     nginx \
-    git
+    git \
+    postgresql-dev \ 
+    supervisor
 
-# Atualize o sistema e instale dependências
-RUN apk --no-cache add postgresql-dev
-
-# Instale extensões PHP necessárias
-RUN docker-php-ext-install pdo pdo_pgsql
+# Instale extensões PHP necessárias (pcntl para Horizon)
+RUN docker-php-ext-install pdo pdo_pgsql pcntl
 
 # Instalando Redis e dependências necessárias
 RUN pecl install redis && docker-php-ext-enable redis
@@ -42,6 +41,14 @@ RUN composer install --no-interaction
 
 # Defina as permissões para o diretório
 # RUN chmod -R 757 /var/www/storage
+
+# Cria o arquivo de log para o Horizon
+RUN mkdir -p /var/www/storage/logs && \
+    touch /var/www/storage/logs/horizon.log && \
+    chown -R www-data:www-data /var/www/storage/logs
+    
+# Copia o arquivo do Horizon para o container
+COPY ./.docker/supervisor/horizon.conf /etc/supervisor/conf.d/horizon.conf
 
 # Copia os arquivos de configuração do PHP-FPM local para o container
 COPY ./.docker/php-fpm/www.conf /usr/local/etc/php-fpm.d/www.conf
