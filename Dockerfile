@@ -31,12 +31,17 @@ WORKDIR /var/www
 
 # Executa comandos de permissão
 RUN chown -R www-data:www-data /var/www
+COPY --chown=www-data:www-data ./ .
+
+# Instalacao de dependencias do composer
+RUN rm -rf vendor
+RUN composer install --no-interaction
 
 # Crie o diretório /var/www/storage
-RUN mkdir -p /var/www/storage
+# RUN mkdir -p /var/www/storage
 
 # Defina as permissões para o diretório
-RUN chmod -R 757 /var/www/storage
+# RUN chmod -R 757 /var/www/storage
 
 # Copia os arquivos de configuração do PHP-FPM local para o container
 COPY ./.docker/php-fpm/www.conf /usr/local/etc/php-fpm.d/www.conf

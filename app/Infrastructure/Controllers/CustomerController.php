@@ -2,6 +2,8 @@
 
 namespace App\Infrastructure\Controllers;
 
+use App\Application\Services\PostalCodeService;
+use App\Jobs\ValidateUserDataJob;
 use Illuminate\Http\Request;
 use App\Application\Services\CustomerService;
 use App\Application\DTO\CustomerDTO;
@@ -14,6 +16,7 @@ use App\Infrastructure\Repositories\CustomerRepositoryInterface;
 class CustomerController
 {
     public function __construct(
+        private PostalCodeService $postalCodeService,
         protected CustomerService $customerService,
         protected CustomerRepositoryInterface $customerRepository
     ) {}
@@ -63,9 +66,17 @@ class CustomerController
         }
     }
 
-     public function createCustomer()
+    public function createCustomer(Request $request)
     {
+        $cep = $request->input('cep');
 
+        // putenv("REDIS_QUEUE=cep_validation");
+    
+        ValidateUserDataJob::dispatch($this->postalCodeService, $cep)->onQueue('data_sync');
+        
+        return response()->json([
+            'message' => 'Usuário adicionado com sucesso.'
+        ]);
     }
 
     public function updateCustomer(Request $request, string $customerId)

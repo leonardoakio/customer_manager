@@ -35,3 +35,6 @@ Route::group(["prefix" => "/api/v1", 'middleware' => 'jwt'], function () {
 
     Route::get("/buscar/{cep}", [PostalCodeController::class, "searchPostalCode"]);
 });
+
+Route::post("/create", [CustomerController::class, "createCustomer"]);
+

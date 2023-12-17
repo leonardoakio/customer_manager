@@ -8,7 +8,7 @@ fi
 # Defina as permissões adequadas
 chmod 755 /var/run/php
 
-composer install
+# composer install
 php artisan key:generate
 php artisan jwt:secret
 php artisan migrate:fresh --seed
