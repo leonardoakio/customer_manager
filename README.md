@@ -14,58 +14,21 @@
 
 
 ## Compatibilidade
+
 - PHP >= 8.1
 - Laravel >= 10.22.0
 - Composer >= 2.5.8
 
 ## Ambiente
+
 - PHP 8.2.9
 - Nginx 1.24.0
 - PostgreSQL 16.1
 - MongoDB 7.0
 - Redis 7.2.0
 
-### Como verificar as versões do container
-#### Abrir o tinker do PHP dentro dentro do contexto da sua aplicação (container)
-```
-php artisan tinker
-```
-- Validar as versões **(PHP, Composer, Laravel)**
-```
-phpversion();   |  shell_exec('composer --version');  | app()->version();
-```
-- Validar conexão *PDO* com banco de dados
-```
-DB::connection()->getPDO();
-```
-- Buscar pelas ENVs da aplicação
-```
-var_dump($_ENV)
-```
-#### Raiz do projeto
-- Validar versão do **REDIS** 
-```
-docker exec -it customer_manager_redis redis-cli
-```
-```
-INFO SERVER
-```
-- Validar versão do **PostgreSQL** (raiz do projeto)
-```
-docker exec -it customer_manager_postgres psql -U root -d customer_manager -W
-```
-```
-SELECT VERSION();
-```
-- Validar versão do **MongoDB** (raiz do projeto)
-```
-docker exec -it customer_manager_mongodb bash
-```
-```
-mongod --version
-```
-
 ## Iniciando o projeto
+
 Criar o arquivo `.env` no projeto
 ```bash
 php -r "copy('.env.example', '.env');"
@@ -79,7 +42,26 @@ Faça o build dos containeres no `docker-compose` no diretório raiz:
 docker-compose up -d --build
 ```
 
-### Serviços e Portas
+## Executando testes automatizados
+
+Execute as migrations com os dados das seeds
+```bash
+php artisan migrate:fresh --seed
+```
+Rode o script para execução dos testes automatizados
+```bash
+php artisan test
+```
+Execute o comando para gerar um diretório `coverage-report` e um relatório em `HTML` com a cobertura de testes 
+```bash
+php artisan test --coverage-html=coverage-report
+```
+Abrir o relatório no seu navegador ou com o comando
+```bash
+open coverage-report/index.html
+```
+
+## Serviços e Portas
 
 | Container                   | Host Port | Container Port (Internal) |
 | --------------------------- | --------- | ------------------------- |
@@ -91,15 +73,22 @@ docker-compose up -d --build
 | customer_manager_metabase   | `3000`    | `3000`                    |
 
 ## Health
+
 Endpoint que validam a saúde da aplicação e dos serviços:
 
 - `http://localhost:8080/health`
 - `http://localhost:8080/liveness`
 
 ## Documentação 
+
 Endpoint da aplicação: `http://localhost:8080/documentation`
 
 A documentação da API deve ser realizada no formato YAML e são armazenados no diretório `storage/api-docs` pelo nome `api-docs-v1.yml`
 
+## Monitoramento
+
+Endpoint de monitoramento de Queues e Jobs: `http://localhost:8080/horizon/dashboard`
+
 **Referências:**
+
 - [Especificação OpenAPI - Swagger](https://swagger.io/specification/)

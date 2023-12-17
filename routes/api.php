@@ -24,7 +24,7 @@ Route::group(["prefix" => "/auth"], function () {
     Route::post('/refresh', [AuthController::class, "refresh"]);
 });
 
-Route::group(["prefix" => "/api/v1", 'middleware' => 'jwt'], function () {
+Route::group(["prefix" => "/api/v1"], function () {
     Route::group(["prefix" => "/customer"], function () {
         Route::get("/", [CustomerController::class, "getCustomerPanel"]);
         Route::get("/{id}", [CustomerController::class, "showCustomer"]);

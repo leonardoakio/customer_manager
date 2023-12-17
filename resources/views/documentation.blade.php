@@ -57,7 +57,7 @@
                     plugins: [
                         SwaggerUIBundle.plugins.DownloadUrl
                     ],
-                    layout: "StandaloneLayout"
+                    layout: "StandaloneLayout",
                 });
                 // End Swagger UI call region
 
