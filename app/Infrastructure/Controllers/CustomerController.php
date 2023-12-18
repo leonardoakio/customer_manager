@@ -2,6 +2,7 @@
 
 namespace App\Infrastructure\Controllers;
 
+use App\Application\Services\CnsRulesService;
 use App\Application\Services\PostalCodeService;
 use App\Infrastructure\Repositories\AddressRepositoryInterface;
 use App\Jobs\ValidateUserDataJob;
@@ -16,7 +17,8 @@ use App\Infrastructure\Repositories\CustomerRepositoryInterface;
 class CustomerController
 {
     public function __construct(
-        private PostalCodeService $postalCodeService,
+        protected PostalCodeService $postalCodeService,
+        protected CnsRulesService $rulesService,
         protected CustomerService $customerService,
         protected CustomerRepositoryInterface $customerRepository,
         protected AddressRepositoryInterface $addressRepository
@@ -31,7 +33,7 @@ class CustomerController
             
             $pagination = new Pagination(
                 page: $page,
-                limit: $limit,
+                limit: $limit ?? 20,
                 orderBy: new OrderBy($orderBy)
             );
 
@@ -70,13 +72,36 @@ class CustomerController
     }
 
     public function createCustomer(Request $request)
-    {
-        $cep = $request->input('cep');
-    
-        ValidateUserDataJob::dispatch($this->postalCodeService, $cep)->onQueue('data_sync');
+    {  
+        $createData = $request->input('data');
         
+        $this->postalCodeService->validateCep($createData['postal_code']);
+        $this->rulesService->cnsRulesValidate($createData['cns']);
+        $this->customerService->registerCustomer($createData);
+
         return response()->json([
-            'message' => 'Usuário adicionado com sucesso.'
+            'message' => 'Sucesso ao incluir os dados!',
+            'data' => $createData
+        ]);
+    }
+
+    public function createCustomerByCsv(Request $request)
+    {  
+        $file = $request->file('csv_file');  
+
+        $customerArray = $this->csvToArray($file);
+
+        foreach ($customerArray as $customer) {
+            ValidateUserDataJob::dispatch(
+                $this->customerService,
+                $this->rulesService,
+                $this->postalCodeService, 
+                $customer
+            )->onQueue('data_sync');
+        }
+
+        return response()->json([
+            'message' => 'Arquivo csv importado com sucesso!'
         ]);
     }
 
@@ -133,5 +158,25 @@ class CustomerController
                 'message' => $e->getMessage(),
             ], 404);
         }
+    }
+
+    function csvToArray($filename = '', $delimiter = ',')
+    {    
+        $header = null;
+        $data = array();
+        
+        if (($handle = fopen($filename, 'r')) !== false)
+        {
+            while (($row = fgetcsv($handle, 1000, $delimiter)) !== false)
+            {
+                if (!$header)
+                    $header = $row;
+                else
+                    $data[] = array_combine($header, $row);
+            }
+            fclose($handle);
+        }
+        
+        return $data;
     }
 }

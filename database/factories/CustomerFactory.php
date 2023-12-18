@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Infrastructure\Helpers\CpfGenerator;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class CustomerFactory extends Factory
 {
+    use CpfGenerator;
     /**
      * Define the model's default state.
      *
@@ -23,8 +25,8 @@ class CustomerFactory extends Factory
             'address_id' => $addressId++,
             'name' => $faker->name,
             'mother_name' => $faker->name('female'),
-            'document' => $faker->numerify('###########'), 
-            'cns' => $faker->numerify('################'),
+            'document' => $this->cpfRandom(), 
+            'cns' => $faker->numerify('###############'),
             'picture_url' => 'picture' . $faker->numberBetween(1, 10000) . '.jpg',
         ];
     }

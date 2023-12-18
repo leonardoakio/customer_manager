@@ -7,6 +7,7 @@ use App\Domain\ValueObjects\CustomerId;
 use App\Domain\ValueObjects\Metadata;
 use App\Domain\ValueObjects\Pagination;
 use App\Models\Customer as CustomerModel;
+use App\Models\Customer;
 use InvalidArgumentException;
 
 class CustomerRepository implements CustomerRepositoryInterface
@@ -42,7 +43,7 @@ class CustomerRepository implements CustomerRepositoryInterface
 
         $metadata = new Metadata(
             $pagination->page() ?? 1, 
-            $pagination->limit() ?? 10,
+            $pagination->limit() ?? 20,
             $pagination->totalRecords() ?? 0
         );
         
@@ -71,6 +72,17 @@ class CustomerRepository implements CustomerRepositoryInterface
         }
 
         return CustomerCollection::fromArray($customers);
+    }
+
+    public function createCustomer(array $customerData): Customer
+    {        
+        if (empty($customerData)) {
+            throw new InvalidArgumentException('Sem dados a serem registrados na tabela Customers');
+        }
+
+        $createdCustomer = $this->customer->create($customerData);
+
+        return $createdCustomer;
     }
 
     public function updateCustomer(CustomerId $customerId, array $customerData): array

@@ -12,6 +12,17 @@ class AddressRepository implements AddressRepositoryInterface
     ) {
     }
 
+    public function createAddress(array $addressData): AddressModel
+    {
+        if (empty($addressData)) {
+            throw new InvalidArgumentException('Sem dados a serem registrados na tabela Addresses');
+        }
+
+        $createdAddress = $this->address->create($addressData);
+
+        return $createdAddress;
+    }
+
     public function updateAddress(int $customerId, array $addressData): array
     {
         $address = $this->address

@@ -52,6 +52,9 @@ Usuário para teste com autenticação JWT
 
 ## Executando testes automatizados
 
+<!-- Por um imprevisto, nao consegui realizar os testes unitarios -->
+<!-- Mas esta aberto a implementacao apos a entrega -->
+
 Execute as migrations com os dados das seeds
 ```bash
 php artisan migrate:fresh --seed
@@ -96,6 +99,8 @@ A documentação da API deve ser realizada no formato YAML e são armazenados no
 ## Monitoramento
 
 Endpoint de monitoramento de Queues e Jobs: `http://localhost:8080/horizon/dashboard`
+
+![Swagger Image](/storage/external/swagger.png)
 
 **Referências:**
 

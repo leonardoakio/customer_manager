@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Infrastructure\Helpers\PostalCodeRegex;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -9,6 +10,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class AddressFactory extends Factory
 {
+    use PostalCodeRegex;
     /**
      * Define the model's default state.
      *
@@ -19,7 +21,7 @@ class AddressFactory extends Factory
         $faker = \Faker\Factory::create('pt_BR');
 
         return [
-            'postal_code' => $faker->postcode,
+            'postal_code' => $this->extractNumericPostalCode($faker->postcode),
             'address' => $faker->streetName,
             'number' => $faker->buildingNumber,
             'complement' => $faker->randomElement(["Apartamento $faker->numerify"]),

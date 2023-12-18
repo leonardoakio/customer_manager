@@ -7,6 +7,7 @@ use App\Domain\ValueObjects\CustomerId;
 use App\Domain\ValueObjects\Pagination;
 use App\Infrastructure\Repositories\AddressRepositoryInterface;
 use App\Infrastructure\Repositories\CustomerRepositoryInterface;
+use App\Models\Customer as CustomerModel;
 use InvalidArgumentException;
 
 class CustomerService
@@ -26,6 +27,34 @@ class CustomerService
     public function getSingleCustomer(CustomerId $customerId): CustomerCollection
     {
         return $this->customerRepository->getCustomer($customerId);
+    }
+
+    public function registerCustomer(array $customerData): CustomerModel
+    {
+        $addressData = [
+            "postal_code" => $customerData["postal_code"],
+            "address" => $customerData["address"],
+            "number" => $customerData["number"],
+            "complement" => $customerData["complement"],
+            "neighborhood" => $customerData["neighborhood"],
+            "city" => $customerData["city"],
+            "state" => $customerData["state"],
+        ];
+     
+        $address = $this->addressRepository->createAddress($addressData);
+
+        $customerDataForRepository = [
+            "address_id" => $address->id,
+            "name" => $customerData["name"],
+            "mother_name" => $customerData["mother_name"],
+            "document" => $customerData["document"],
+            "cns" => $customerData["cns"],
+            "picture_url" => $customerData["picture_url"],
+        ];
+
+        $customer = $this->customerRepository->createCustomer($customerDataForRepository);
+    
+        return $customer;
     }
 
     public function updateCustomerData(CustomerId $customerId, array $updateData): array

@@ -261,6 +261,184 @@ paths:
                 type: object
                 oneOf:
                   - $ref: '#/definitions/response-500'
+    post:
+      tags:
+        - Customer
+      summary: "Registra os dados inseridos de um usuário"
+      description: "Registra os dados inseridos de um usuário"
+      operationId: "createCustomer"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  properties:
+                    name:
+                      nullable: false
+                      example: Guilherme Carrara Sobrinho
+                    mother_name:
+                      nullable: false
+                      example: Irene Roque Fonseca
+                    document:
+                      nullable: false
+                      example: 35480706047
+                    cns:
+                      nullable: false
+                      example: 708505352621273
+                    picture_url:
+                      nullable: false
+                      example: picture10_url
+                    postal_code:
+                      nullable: false
+                      example: 87210234
+                    address:
+                      nullable: false
+                      example: Rua Washington Tavares Pereira
+                    number:
+                      nullable: false
+                      example: 1025
+                    complement:
+                      nullable: false
+                      example: apartamento 404
+                    neighborhood:
+                      nullable: false
+                      example: Residencial Aquiles Cômar
+                    city:
+                      nullable: false
+                      example: Cianorte
+                    state:
+                      nullable: false
+                      example: PR                                        
+      responses:
+        200:
+          description: "OK"
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    nullable: false
+                    example: Sucesso ao incluir os dados!
+                  data:
+                    properties:
+                      name:
+                        nullable: false
+                        example: Guilherme Carrara Sobrinho
+                      mother_name:
+                        nullable: false
+                        example: Irene Roque Fonseca
+                      document:
+                        nullable: false
+                        example: 35480706047
+                      cns:
+                        nullable: false
+                        example: 708505352621273
+                      picture_url:
+                        nullable: false
+                        example: picture10_url
+                      postal_code:
+                        nullable: false
+                        example: 87210234
+                      address:
+                        nullable: false
+                        example: Rua Washington Tavares Pereira
+                      number:
+                        nullable: false
+                        example: 1025
+                      complement:
+                        nullable: false
+                        example: apartamento 404
+                      neighborhood:
+                        nullable: false
+                        example: Residencial Aquiles Cômar
+                      city:
+                        nullable: false
+                        example: Cianorte
+                      state:
+                        nullable: false
+                        example: PR                                                                                                                                                           
+        401:
+          description: "Unauthorized"
+          content: 
+            application/json:
+              schema:
+                type: object
+                oneOf:
+                  - $ref: '#/definitions/response-401'
+        404:
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Cliente com ID 5 não encontrado"
+        500:
+          description: "Erro interno da aplicação"
+          content: 
+            application/json:
+              schema:
+                type: object
+                oneOf:
+                  - $ref: '#/definitions/response-500'
+  api/v1/customer/csv:
+    post:
+      tags:
+        - Customer
+      summary: "Registra os dados inseridos através de arquivo CSV"
+      description: "Registra os dados inseridos através de arquivo CSV"
+      operationId: "createCsvCustomer"
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                csv_file:
+                  type: string
+                  format: binary                                  
+      responses:
+        200:
+          description: "OK"
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    nullable: false
+                    example: "Arquivo csv importado com sucesso!"                                                                                                                                                 
+        401:
+          description: "Unauthorized"
+          content: 
+            application/json:
+              schema:
+                type: object
+                oneOf:
+                  - $ref: '#/definitions/response-401'
+        404:
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Cliente com ID 5 não encontrado"
+        500:
+          description: "Erro interno da aplicação"
+          content: 
+            application/json:
+              schema:
+                type: object
+                oneOf:
+                  - $ref: '#/definitions/response-500'                  
   /api/v1/customer/{id}:
     get:
       tags:
@@ -469,7 +647,7 @@ paths:
                     properties:
                       postal_code:
                         type: string
-                        example: 30411030 
+                        example: 30411030
                       city:
                         type: string
                         example: Belo Horizonte          
@@ -499,6 +677,7 @@ paths:
                 type: object
                 oneOf:
                   - $ref: '#/definitions/response-500'
+  api/v1/customer/{id}:                            
     delete:
       tags:
         - Customer
@@ -549,6 +728,7 @@ paths:
                 type: object
                 oneOf:
                   - $ref: '#/definitions/response-500'
+
   # Validations
   /api/v1/validate/postal-code:
     get:

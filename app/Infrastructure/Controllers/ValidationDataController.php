@@ -13,6 +13,7 @@ class ValidationDataController extends Controller
         private PostalCodeService $postalCodeService,
         private CnsRulesService $cnsRulesService
     ) {}
+    
     public function validatePostalCode(Request $request)
     {
         try {
