@@ -42,6 +42,14 @@ Faça o build dos containeres no `docker-compose` no diretório raiz:
 docker-compose up -d --build
 ```
 
+## Iniciando o projeto
+
+Usuário para teste com autenticação JWT
+```bash
+| email:    |  teste@teste.com|
+| password: |  password       |
+```
+
 ## Executando testes automatizados
 
 Execute as migrations com os dados das seeds

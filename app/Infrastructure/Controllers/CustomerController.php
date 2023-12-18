@@ -72,8 +72,6 @@ class CustomerController
     public function createCustomer(Request $request)
     {
         $cep = $request->input('cep');
-
-        // putenv("REDIS_QUEUE=cep_validation");
     
         ValidateUserDataJob::dispatch($this->postalCodeService, $cep)->onQueue('data_sync');
         
