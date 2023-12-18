@@ -2,14 +2,12 @@
 
 namespace App\Domain\ValueObjects;
 
-use InvalidArgumentException;
-
 class Metadata
 {
     public function __construct(
-        private int $page, 
-        private int $limit, 
-        private int $totalRecords
+        private ?int $page, 
+        private ?int $limit, 
+        private ?int $totalRecords
     )
     {}
 

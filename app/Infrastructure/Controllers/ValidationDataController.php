@@ -22,15 +22,8 @@ class ValidationDataController extends Controller
     
             return response()->json($data);
         } catch (\Exception $e) {
-            $response = $e->getResponse();
-
             return response()->json([
-                'message' => 'Erro ao consultar cep no via_cep',
-                'data' => [
-                    'error_code' => $response->getStatusCode(),
-                    'reason' => $response->getReasonPhrase(),
-                    'response' => $response->getBody()->getContents()
-                ]
+                'message' => $e->getMessage()
             ]);
         }
     }

@@ -19,7 +19,7 @@ paths:
       operationId: "getToken"
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:
@@ -361,6 +361,23 @@ paths:
           description: ID do cliente a ser recuperado
           schema:
             type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      name:
+                        nullable: false
+                        example: Leonardo Akio
+                      document:
+                        nullable: false
+                        example: 22339637090
       responses:
         200:
           description: "OK"
@@ -373,12 +390,89 @@ paths:
                     type: string
                     example: "Sucesso ao atualizar os dados!"   
                   data:
-                    type: array
-                    items:
-                      properties:
-                        mother_name:
-                          type: string
-                          example: Vitoria Araujo Martins                  
+                    properties:
+                      name:
+                        type: string
+                        example: Leonardo Akio       
+                      document:
+                        type: string
+                        example: 22339637090          
+        401:
+          description: "Unauthorized"
+          content: 
+            application/json:
+              schema:
+                type: object
+                oneOf:
+                  - $ref: '#/definitions/response-401'
+        404:
+          description: "Not Found"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Undefined array key 'addresses'"
+        500:
+          description: "Erro interno da aplicação"
+          content: 
+            application/json:
+              schema:
+                type: object
+                oneOf:
+                  - $ref: '#/definitions/response-500'
+  api/v1/customer/address/{id}:
+    patch:
+      tags:
+        - Customer
+      summary: "Altera um endereço de um usuário específico cadastrado"
+      description: "Altera um endereço de um usuário específico cadastrado"
+      operationId: "updateCustomerAddress"
+      parameters: 
+        - in: path
+          name: id
+          required: true
+          description: ID do cliente a ser recuperado
+          schema:
+            type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      postal_code:
+                        nullable: false
+                        example: 30411030
+                      city:
+                        nullable: false
+                        example: Belo Horizonte
+      responses:
+        200:
+          description: "OK"
+          content: 
+            application/json:
+              schema:
+                type: object
+                properties: 
+                  message:
+                    type: string
+                    example: "Sucesso ao atualizar os dados!"   
+                  data:
+                    properties:
+                      postal_code:
+                        type: string
+                        example: 30411030 
+                      city:
+                        type: string
+                        example: Belo Horizonte          
         401:
           description: "Unauthorized"
           content: 
@@ -465,7 +559,7 @@ paths:
       operationId: "validadePostalCode"
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:
@@ -511,7 +605,7 @@ paths:
       operationId: "validadeCns"
       requestBody:
         content:
-          application/x-www-form-urlencoded:
+          application/json:
             schema:
               type: object
               properties:

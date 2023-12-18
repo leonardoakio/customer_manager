@@ -26,11 +26,12 @@ Route::group(["prefix" => "/auth"], function () {
 });
 
 Route::group(["prefix" => "/api/v1"], function () {
-    Route::group(["prefix" => "/customer", "middleware' => 'jwt"], function () {
+    Route::group(["prefix" => "/customer"], function () {
         Route::get("/", [CustomerController::class, "getCustomerPanel"]);
         Route::get("/{id}", [CustomerController::class, "showCustomer"]);
         Route::post("/{id}", [CustomerController::class, "createCustomer"]);
         Route::patch("/{id}", [CustomerController::class, "updateCustomer"]);
+        Route::patch("/address/{id}", [CustomerController::class, "updateCustomerAddress"]);
         Route::delete("/{id}", [CustomerController::class, "deleteCustomer"]);
     });
 

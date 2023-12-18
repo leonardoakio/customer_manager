@@ -22,7 +22,7 @@ class PostalCodeService
         $postalCode = preg_replace('/[^0-9]/', '', $postalCode);
 
         if (strlen($postalCode) !== 8) {
-            return response()->json(['error' => 'CEP inválido'], 400);
+            throw new InvalidArgumentException('O CEP deve ter exatamente 8 dígitos.');
         }
 
         return $this->getCepData($postalCode);
@@ -31,15 +31,15 @@ class PostalCodeService
     public function getCepData(string $postalCode): ?array
     {
         $cachedData = $this->cache->get($postalCode);
-    
+
         if ($cachedData !== null) {
             return $cachedData;
         }
 
         $response = $this->postalCodeRepository->getPostalCodeData($postalCode);
-    
-        if (!$response) {
-            throw new InvalidArgumentException('O CEP não pode ser consultado!');
+
+        if (!isset($response['cep'])) {
+            throw new InvalidArgumentException('A key "cep" não está definida no resultado!');
         }
 
         $this->cache->save($postalCode, $response, 3600);

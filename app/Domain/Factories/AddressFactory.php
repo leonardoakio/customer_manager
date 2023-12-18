@@ -12,22 +12,20 @@ class AddressFactory
     use Mapping;
 
     public static function fromArray(array $data): Address
-    {
-        $addressData = $data[0];
-        
-        $postalCode = PostalCode::fromString($addressData['postal_code']);
-        
+    {   
+        $postalCode = PostalCode::fromString($data['postal_code']);
+
         return  new Address(
-            id: self::getIntOrNull($addressData, 'id'),
-            address: self::getString($addressData, 'address'),
-            number: self::getIntOrNull($addressData, 'number'),
-            complement: self::getString($addressData, 'complement'),
-            neighborhood: self::getString($addressData, 'neighborhood'),
-            city: self::getString($addressData, 'city'),
-            state: self::getString($addressData, 'state'),
+            id: self::getIntOrNull($data, 'id'),
+            address: self::getString($data, 'address'),
+            number: self::getIntOrNull($data, 'number'),
+            complement: self::getString($data, 'complement'),
+            neighborhood: self::getString($data, 'neighborhood'),
+            city: self::getString($data, 'city'),
+            state: self::getString($data, 'state'),
             postalCode: $postalCode,
-            createdAt: new DateTimeImmutable(self::getString($addressData, 'created_at')),
-            updatedAt: new DateTimeImmutable(self::getString($addressData, 'updated_at')),
+            createdAt: new DateTimeImmutable(self::getString($data, 'created_at')),
+            updatedAt: new DateTimeImmutable(self::getString($data, 'updated_at')),
         );
         
     }

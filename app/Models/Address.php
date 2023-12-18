@@ -13,10 +13,13 @@ class Address extends Model
     protected $table = 'addresses';
 
     protected $fillable = [
+        'postal_code',
         'address',
         'number',
         'complement',
-        'neighborhood'
+        'neighborhood',
+        'city',
+        'state'
     ];
 
     public function customer(): BelongsTo

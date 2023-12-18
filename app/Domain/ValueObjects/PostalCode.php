@@ -7,7 +7,7 @@ use InvalidArgumentException;
 class PostalCode
 {
     public function __construct(
-        private string $code
+        private ?string $code
     )
     {
         $this->validate();
@@ -15,7 +15,7 @@ class PostalCode
 
     private function validate(): void
     {
-        if (strlen($this->code) !== 8) {
+        if ($this->code !== null && strlen($this->code) !== 8) {
             throw new InvalidArgumentException(
                 sprintf(
                     'O número do CEP deve conter 8 dígitos',
@@ -35,8 +35,12 @@ class PostalCode
         return preg_replace('/[^0-9]/', '', $this->code);
     }
 
-    public static function fromString(string $code): self
+    public static function fromString(?string $code): ?self
     {
-        return new self($code);
-    }
+        if ($code !== null) {
+            return new self($code);
+        }
+    
+        return null;
+    }    
 }

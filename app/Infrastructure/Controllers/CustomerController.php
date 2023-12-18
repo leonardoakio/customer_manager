@@ -3,11 +3,11 @@
 namespace App\Infrastructure\Controllers;
 
 use App\Application\Services\PostalCodeService;
+use App\Infrastructure\Repositories\AddressRepositoryInterface;
 use App\Jobs\ValidateUserDataJob;
 use Illuminate\Http\Request;
 use App\Application\Services\CustomerService;
 use App\Application\DTO\CustomerDTO;
-use App\Domain\Entities\Customer;
 use App\Domain\ValueObjects\CustomerId;
 use App\Domain\ValueObjects\OrderBy;
 use App\Domain\ValueObjects\Pagination;
@@ -18,7 +18,8 @@ class CustomerController
     public function __construct(
         private PostalCodeService $postalCodeService,
         protected CustomerService $customerService,
-        protected CustomerRepositoryInterface $customerRepository
+        protected CustomerRepositoryInterface $customerRepository,
+        protected AddressRepositoryInterface $addressRepository
     ) {}
 
     public function getCustomerPanel(Request $request)
@@ -58,7 +59,9 @@ class CustomerController
 
             $customerData = $this->customerService->getSingleCustomer($customerId);
 
-            return response()->json($customerData);
+            $customersDto = CustomerDTO::create($customerData);
+
+            return response()->json($customersDto[0]);
         } catch (\Throwable $e) {
             return response()->json([
                 'message' => $e->getMessage(),
@@ -83,22 +86,28 @@ class CustomerController
     {
         try {
             $customerId = CustomerId::fromString($customerId);
-            $name = $request->input('name');
-            $motherName = $request->input('mother_name');
-            $document = $request->input('document');
-            $cns = $request->input('cns');
-            $picture = $request->input('picture_url');
+            $updateData = $request->input('data');
 
-            $customerData = Customer::fromArray([
-                'id' => $customerId->asInteger(),
-                'name' => $name,
-                'mother_name' => $motherName,
-                'document' => $document,
-                'cns' => $cns,
-                'picture_url' => $picture
+            $update = $this->customerService->updateCustomerData($customerId, $updateData);
+
+            return response()->json([
+                'message' => 'Sucesso ao atualizar os dados!',
+                'data' => $update
             ]);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 404);
+        }
+    }
 
-            $update = $this->customerRepository->updateCustomer($customerData);
+    public function updateCustomerAddress(Request $request, string $customerId)
+    {
+        try {
+            $customerId = CustomerId::fromString($customerId)->asInteger();
+            $updateData = $request->input('data');
+
+            $update = $this->customerService->updateCustomerAddressData($customerId, $updateData);
 
             return response()->json([
                 'message' => 'Sucesso ao atualizar os dados!',
@@ -116,7 +125,7 @@ class CustomerController
         try {
             $customerId = CustomerId::fromString($customerId);
 
-            $this->customerRepository->deleteCustomer($customerId);
+            $this->customerService->deleteCustomerData($customerId);
 
             return response()->json([
                 'message' => 'Sucesso ao deletar o customer!'

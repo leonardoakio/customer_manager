@@ -3,7 +3,6 @@
 namespace App\Domain\Factories;
 
 use App\Domain\Collections\AddressCollection;
-use App\Domain\Entities\Address;
 use App\Domain\Entities\Customer;
 use App\Domain\ValueObjects\Cns;
 use App\Domain\ValueObjects\Cpf;
@@ -15,8 +14,8 @@ class CustomerFactory
     use Mapping;
 
     public static function fromArray(array $data): Customer
-    {
-        $customerAddress = Address::fromArray($data['addresses']);
+    {        
+        $addressCollection = AddressCollection::fromArray($data['addresses']);
 
         $customer = new Customer(
             id: self::getIntOrNull($data, 'id'),
@@ -25,7 +24,7 @@ class CustomerFactory
             pictureUrl: self::getString($data, 'picture_url'),
             document: new Cpf($data['document']),
             cns: Cns::fromString($data['cns']),
-            address: $customerAddress,
+            address: $addressCollection->items()[0],
             createdAt: new DateTimeImmutable(self::getString($data, 'created_at')),
             updatedAt: new DateTimeImmutable(self::getString($data, 'updated_at')),
         );

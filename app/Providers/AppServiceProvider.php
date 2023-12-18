@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use App\Infrastructure\Adapters\CacheInterface;
 use App\Infrastructure\Adapters\RedisCacheLaravelAdapter;
+use App\Infrastructure\Repositories\AddressRepository;
+use App\Infrastructure\Repositories\AddressRepositoryInterface;
 use App\Infrastructure\Repositories\CustomerRepositoryInterface;
 use App\Infrastructure\Repositories\CustomerRepository;
 
@@ -19,8 +21,8 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(CustomerRepositoryInterface::class, CustomerRepository::class);
+        $this->app->bind(AddressRepositoryInterface::class, AddressRepository::class);
         $this->app->bind(PostalCodeRepositoryInterface::class, PostalCodeRepository::class);
-        // $this->app->bind(CustomerRepositoryInterface::class, CustomerRepository::class);
 
         $this->app->bind(CacheInterface::class, RedisCacheLaravelAdapter::class);
     }

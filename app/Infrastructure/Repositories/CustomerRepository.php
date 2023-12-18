@@ -3,7 +3,6 @@
 namespace App\Infrastructure\Repositories;
 
 use App\Domain\Collections\CustomerCollection;
-use App\Domain\Entities\Customer;
 use App\Domain\ValueObjects\CustomerId;
 use App\Domain\ValueObjects\Metadata;
 use App\Domain\ValueObjects\Pagination;
@@ -42,10 +41,11 @@ class CustomerRepository implements CustomerRepositoryInterface
         }
 
         $metadata = new Metadata(
-            $pagination->page(),
-            $pagination->limit(),
-            $pagination->totalRecords()
+            $pagination->page() ?? 1, 
+            $pagination->limit() ?? 10,
+            $pagination->totalRecords() ?? 0
         );
+        
     
         return [
             'customers' => CustomerCollection::fromArray($customers),
@@ -53,7 +53,7 @@ class CustomerRepository implements CustomerRepositoryInterface
         ];    
     }
 
-    public function getCustomer(CustomerId $customerId): array
+    public function getCustomer(CustomerId $customerId): CustomerCollection
     {
         $customers = $this->customer
             ->where('id', $customerId->asInteger())
@@ -70,12 +70,12 @@ class CustomerRepository implements CustomerRepositoryInterface
             );
         }
 
-        return $customers;
+        return CustomerCollection::fromArray($customers);
     }
 
-    public function updateCustomer(Customer $customer): array
+    public function updateCustomer(CustomerId $customerId, array $customerData): array
     {
-        $customerId = $customer->getId();
+        $customerId = $customerId->asInteger();
 
         $existingCustomer = $this->customer->find($customerId);
 
@@ -88,30 +88,20 @@ class CustomerRepository implements CustomerRepositoryInterface
             );
         }
 
-        $updateData = [
-            'name' => $customer->getName(),
-            'mother_name' => $customer->getMotherName(),
-            'document' => $customer->getDocument(),
-            'cns' => $customer->getCns(),
-            'picture_url' => $customer->getPictureUrl()
-        ];
-
-        $updateData = array_filter($updateData);
-
-        if (empty($updateData)) {
+        if (empty($customerData)) {
             throw new InvalidArgumentException(
                 sprintf(
-                    'Sem dados a serem altardos para o customer_id: %s',
+                    'Sem dados a serem alterados para o customer_id: %s',
                     $customerId
                 )
             );
         }
         
         $this->customer
-        ->where('id', $customerId)
-        ->update($updateData);
+            ->where('id', $customerId)
+            ->update($customerData);
 
-        return $updateData;
+        return $customerData;
     }
 
     public function deleteCustomer(CustomerId $customerId): bool
