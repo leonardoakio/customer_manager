@@ -16,16 +16,16 @@ class AddressFactory extends Factory
      */
     public function definition(): array
     {
-        $this->faker->locale('pt_BR');
-     
+        $faker = \Faker\Factory::create('pt_BR');
+
         return [
-            'postal_code' => $this->faker->postcode,
-            'address' => $this->faker->streetAddress,
-            'number' => $this->faker->numberBetween(1, 100),
-            'complement' => $this->faker->word,
-            'neighborhood' => $this->faker->word,
-            'city' => $this->faker->city,
-            'state' => $this->faker->stateAbbr
+            'postal_code' => $faker->postcode,
+            'address' => $faker->streetName,
+            'number' => $faker->buildingNumber,
+            'complement' => $faker->randomElement(["Apartamento $faker->numerify"]),
+            'neighborhood' => $faker->randomElement(['Nova suissa', 'Prado', 'Vila Oeste', 'Buritis', 'Gutierrez', 'Alphaville', 'Serra']),
+            'city' => $faker->city,
+            'state' => $faker->state(),
         ];
     }
 }

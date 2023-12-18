@@ -16,13 +16,16 @@ class CustomerFactory extends Factory
      */
     public function definition(): array
     {
+        $faker = \Faker\Factory::create('pt_BR');
+        static $addressId = 1;
+
         return [
-            'address_id' => $this->faker->numberBetween(1, 3),
-            'name' => $this->faker->name,
-            'mother_name' => $this->faker->name,
-            'document' => $this->faker->numerify('###########'),
-            'cns' => $this->faker->numerify('################'),
-            'picture_url' => $this->faker->imageUrl(),
+            'address_id' => $addressId++,
+            'name' => $faker->name,
+            'mother_name' => $faker->name('female'),
+            'document' => $faker->numerify('###########'), 
+            'cns' => $faker->numerify('################'),
+            'picture_url' => 'picture' . $faker->numberBetween(1, 10000) . '.jpg',
         ];
     }
 }
