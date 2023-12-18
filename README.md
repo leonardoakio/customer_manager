@@ -45,10 +45,11 @@ docker-compose up -d --build
 ## Iniciando o projeto
 
 Usuário para teste com autenticação JWT
-```bash
-| email:    |  teste@teste.com|
-| password: |  password       |
-```
+
+| Email            |  Password   |
+|--------------------------------|
+| teste@teste.com  |  password   |
+
 
 ## Executando testes automatizados
 
